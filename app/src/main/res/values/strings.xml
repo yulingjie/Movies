@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Movies</string>
+    <string name="title_activity_hello_grid">HelloGridActivity</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="tmdb_key">7c654493d11ad858233243f5fa692db6</string>
 </resources>
