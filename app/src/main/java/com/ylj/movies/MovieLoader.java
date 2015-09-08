@@ -1,15 +1,14 @@
 package com.ylj.movies;
 
+import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 
 import com.parser.IParser;
 import com.parser.Movie;
-import com.parser.MovieParser;
+import com.parser.Page;
+import com.parser.PageParser;
 
-import org.apache.http.HttpRequest;
-
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,8 +20,35 @@ import java.net.URL;
 /**
  * Created by ylj on 8/6/15.
  */
-public class MovieLoader {
 
+interface IMovieLoad
+{
+    void MovieLoadComplete();
+}
+
+public class MovieLoader {
+    Movie[] movies;
+    Context mContext;
+    IMovieLoad callback;
+
+    public Movie[] getMovies() {
+        return movies;
+    }
+
+    public MovieLoader(Context context)
+    {
+        mContext = context;
+    }
+
+    public void setCallback(IMovieLoad callback) {
+        this.callback = callback;
+    }
+
+    public void Load()
+    {
+        MovieDiscover movieDiscover = new MovieDiscover();
+        movieDiscover.execute("popularity.desc", mContext.getString(R.string.tmdb_key));
+    }
 
     class MovieDiscover extends AsyncTask<String,Void, String>
     {
@@ -67,8 +93,13 @@ public class MovieLoader {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            IParser parser = new MovieParser();
-           // Movie movie = parser.Parse(s);
+            IParser<Page> pageParser = new PageParser();
+            Page p = pageParser.Parse(s);
+            movies = p.getMovies();
+
+            if(callback != null) {
+                callback.MovieLoadComplete();
+            }
 
         }
     }

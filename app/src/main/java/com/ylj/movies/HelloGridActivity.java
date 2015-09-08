@@ -9,18 +9,26 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
 
+import com.parser.Movie;
+
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class HelloGridActivity extends ActionBarActivity {
 
+
+    MovieLoader movieLoader;
+    ImageAdapter imageAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_hello_grid);
 
-        ImageAdapter imgAdapter = new ImageAdapter(this);
+        imageAdapter = new ImageAdapter(this);
 
         GridView gridView = (GridView) findViewById(R.id.gridview);
-        gridView.setAdapter(new ImageAdapter(this));
+        gridView.setAdapter(imageAdapter);
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -28,6 +36,10 @@ public class HelloGridActivity extends ActionBarActivity {
                         Toast.LENGTH_SHORT).show();
             }
         });
+
+        movieLoader = new MovieLoader(this);
+        movieLoader.setCallback(new OnMovieLoadComplete());
+        movieLoader.Load();
     }
 
     @Override
@@ -50,6 +62,21 @@ public class HelloGridActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+    class OnMovieLoadComplete implements IMovieLoad
+    {
+        @Override
+        public void MovieLoadComplete() {
+            Movie[] movies = movieLoader.getMovies();
+            List<String> moviePath = new ArrayList<>();
+            for(Movie movie : movies)
+            {
+                moviePath.add(movie.getBackdrop_path());
+            }
+            String[] path = new String[moviePath.size()];
+
+            imageAdapter.setImagePaths(moviePath.toArray(path));
+        }
     }
 
 }

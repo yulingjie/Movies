@@ -1,19 +1,42 @@
 package com.ylj.movies;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 
+import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by ylj on 7/20/15.
  */
 public class ImageAdapter extends BaseAdapter {
 
-    final static String baseUrl = "";
+    final static String baseUrl = "http://image.tmdb.org/t/p/";
+    final static String size="w185";
     private Context context;
+    private String[] imageUrls;
+
+    public void setImagePaths(String[] imagePaths) {
+
+        List<String> urls = new ArrayList<>();
+        for(String imgPath : imagePaths) {
+            Uri.Builder builder = Uri.parse(baseUrl).buildUpon();
+            builder.appendPath(size)
+                    .appendEncodedPath(imgPath);
+            urls.add(builder.build().toString());
+        }
+        String[] urlArr = new String[urls.size()];
+        this.imageUrls = urls.toArray(urlArr);
+        notifyDataSetChanged();
+    }
+
 
     public ImageAdapter(Context c)
     {
@@ -22,7 +45,10 @@ public class ImageAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return mThumbIds.length;
+        if(imageUrls == null || imageUrls.length <= 0) {
+            return mThumbIds.length;
+        }
+        return imageUrls.length;
     }
 
     @Override
@@ -37,6 +63,8 @@ public class ImageAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+
+
         ImageView imageView;
         if(convertView == null){
             imageView = new ImageView(context);
@@ -47,8 +75,13 @@ public class ImageAdapter extends BaseAdapter {
         else {
             imageView = (ImageView) convertView;
         }
-        
-        //imageView.setImageResource(mThumbIds[position]);
+        if((imageUrls == null) || (position >= imageUrls.length)) {
+            imageView.setImageResource(mThumbIds[position]);
+        }
+        else {
+            Picasso.with(context).load(imageUrls[position]).into(imageView);
+        }
+
         return imageView;
     }
     private Integer[] mThumbIds = {
