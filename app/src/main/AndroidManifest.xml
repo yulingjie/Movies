@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.ylj.movies" >
 
+
     <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
@@ -12,7 +13,8 @@
 
         <activity
             android:name=".HelloGridActivity"
-            android:label="@string/title_activity_hello_grid" >
+            android:label="@string/title_activity_hello_grid"
+            android:theme="@style/Theme.AppCompat.Light">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

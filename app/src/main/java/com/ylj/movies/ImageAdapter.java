@@ -19,7 +19,7 @@ import java.util.List;
 public class ImageAdapter extends BaseAdapter {
 
     final static String baseUrl = "http://image.tmdb.org/t/p/";
-    final static String size="w185";
+    final static String size="w342";
     private Context context;
     private String[] imageUrls;
 

@@ -1,7 +1,9 @@
 package com.ylj.movies;
 
-import android.support.v7.app.ActionBarActivity;
+import android.net.Uri;
+import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,31 +17,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class HelloGridActivity extends ActionBarActivity {
+public class HelloGridActivity extends ActionBarActivity implements MainFragment.OnFragmentInteractionListener {
 
 
-    MovieLoader movieLoader;
-    ImageAdapter imageAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_hello_grid);
 
-        imageAdapter = new ImageAdapter(this);
+        MainFragment fragment = new MainFragment();
+        fragment.setArguments(getIntent().getExtras());
 
-        GridView gridView = (GridView) findViewById(R.id.gridview);
-        gridView.setAdapter(imageAdapter);
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(HelloGridActivity.this, "" + position,
-                        Toast.LENGTH_SHORT).show();
-            }
-        });
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.fragment_container, fragment).commit();
 
-        movieLoader = new MovieLoader(this);
-        movieLoader.setCallback(new OnMovieLoadComplete());
-        movieLoader.Load();
     }
 
     @Override
@@ -63,20 +55,10 @@ public class HelloGridActivity extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
-    class OnMovieLoadComplete implements IMovieLoad
-    {
-        @Override
-        public void MovieLoadComplete() {
-            Movie[] movies = movieLoader.getMovies();
-            List<String> moviePath = new ArrayList<>();
-            for(Movie movie : movies)
-            {
-                moviePath.add(movie.getBackdrop_path());
-            }
-            String[] path = new String[moviePath.size()];
 
-            imageAdapter.setImagePaths(moviePath.toArray(path));
-        }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
     }
-
 }
