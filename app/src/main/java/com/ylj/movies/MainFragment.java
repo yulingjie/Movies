@@ -1,12 +1,16 @@
 package com.ylj.movies;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
@@ -29,12 +33,13 @@ public class MainFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
+    private String mOldImageSize;
 
     MovieLoader movieLoader;
     ImageAdapter imageAdapter;
     private OnFragmentInteractionListener mListener;
-
-
+    private SharedPreferences mDefaultPref;
+    private SharedPreferences.OnSharedPreferenceChangeListener mOnPrefChangeListener;
 
     public MainFragment() {
         // Required empty public constructor
@@ -44,11 +49,28 @@ public class MainFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+
+        mOnPrefChangeListener = new OnSharedPreferenceChange();
+        mDefaultPref = PreferenceManager.getDefaultSharedPreferences(this.getActivity());
+
         imageAdapter = new ImageAdapter(this.getActivity());
 
         movieLoader = new MovieLoader(this.getActivity());
         movieLoader.setCallback(new OnMovieLoadComplete());
         movieLoader.Load();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mDefaultPref.unregisterOnSharedPreferenceChangeListener(mOnPrefChangeListener);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mDefaultPref.registerOnSharedPreferenceChangeListener(mOnPrefChangeListener);
+
     }
 
     @Override
@@ -67,6 +89,12 @@ public class MainFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
 
         inflater.inflate(R.menu.menu_main_fragment, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        return super.onOptionsItemSelected(item);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -92,6 +120,8 @@ public class MainFragment extends Fragment {
         super.onDetach();
         mListener = null;
     }
+
+
 
     /**
      * This interface must be implemented by activities that contain this
@@ -121,6 +151,20 @@ public class MainFragment extends Fragment {
             String[] path = new String[moviePath.size()];
 
             imageAdapter.setImagePaths(moviePath.toArray(path));
+        }
+    }
+
+    class OnSharedPreferenceChange implements SharedPreferences.OnSharedPreferenceChangeListener
+    {
+
+        @Override
+        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+            if(key.equals(SettingsActivity.KEY_PREF_IMAGE_SIZE))
+            {
+                mOldImageSize = sharedPreferences.getString(key,mOldImageSize);
+                imageAdapter.setSize(mOldImageSize);
+            }
+
         }
     }
 }

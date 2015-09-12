@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <ListPreference
+        android:key="pref_sync_img_size"
+        android:title="@string/pref_img_size"
+        android:dialogTitle="@string/pref_img_size"
+        android:entries="@array/pref_img_size_entries"
+        android:entryValues="@array/pref_img_size_values"
+        android:defaultValue="@string/pref_img_size_default"></ListPreference>
+
+</PreferenceScreen>

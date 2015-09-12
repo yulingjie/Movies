@@ -9,4 +9,26 @@
 
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+<!-- setting preferences -->
+    <string name="pref_img_size">Image Size</string>
+    <string-array name="pref_img_size_entries">
+        <item>width 92</item>
+        <item>width 154</item>
+        <item>width 185</item>
+        <item>width 342</item>
+        <item>width 500</item>
+        <item>width 780</item>
+        <item>original</item>
+    </string-array>
+    <string-array name="pref_img_size_values">
+        <item>w92</item>
+        <item>w154</item>
+        <item>w185</item>
+        <item>w342</item>
+        <item>w500</item>
+        <item>w780</item>
+        <item>original</item>
+    </string-array>
+    <string name="pref_img_size_default">w500</string>
 </resources>
