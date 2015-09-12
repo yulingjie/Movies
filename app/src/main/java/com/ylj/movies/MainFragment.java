@@ -54,10 +54,18 @@ public class MainFragment extends Fragment {
         mDefaultPref = PreferenceManager.getDefaultSharedPreferences(this.getActivity());
 
         imageAdapter = new ImageAdapter(this.getActivity());
-
+        if(mDefaultPref.contains(SettingsActivity.KEY_PREF_IMAGE_SIZE))
+        {
+            imageAdapter.setSize(mDefaultPref.getString(SettingsActivity.KEY_PREF_IMAGE_SIZE, getString(R.string.pref_img_size_default)));
+        }
         movieLoader = new MovieLoader(this.getActivity());
         movieLoader.setCallback(new OnMovieLoadComplete());
-        movieLoader.Load();
+        if(mDefaultPref.contains(SettingsActivity.KEY_PREF_SORT_BY)) {
+            movieLoader.Load(mDefaultPref.getString(SettingsActivity.KEY_PREF_SORT_BY,getString(R.string.pref_sort_by_default_value)));
+        }
+        else {
+            movieLoader.Load();
+        }
     }
 
     @Override
@@ -146,7 +154,13 @@ public class MainFragment extends Fragment {
             List<String> moviePath = new ArrayList<>();
             for(Movie movie : movies)
             {
-                moviePath.add(movie.getBackdrop_path());
+                if(!movie.getBackdrop_path().equals("null")) {
+                    moviePath.add(movie.getBackdrop_path());
+                }
+                else
+                {
+                    moviePath.add("");
+                }
             }
             String[] path = new String[moviePath.size()];
 
@@ -163,6 +177,11 @@ public class MainFragment extends Fragment {
             {
                 mOldImageSize = sharedPreferences.getString(key,mOldImageSize);
                 imageAdapter.setSize(mOldImageSize);
+            }
+            else if(key.equals(SettingsActivity.KEY_PREF_SORT_BY))
+            {
+                String sort_by = sharedPreferences.getString(key, getString(R.string.pref_sort_by_default_value));
+                movieLoader.Load(sort_by);
             }
 
         }

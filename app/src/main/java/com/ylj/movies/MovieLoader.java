@@ -49,6 +49,11 @@ public class MovieLoader {
         MovieDiscover movieDiscover = new MovieDiscover();
         movieDiscover.execute("popularity.desc", mContext.getString(R.string.tmdb_key));
     }
+    public void Load(String sortby)
+    {
+        MovieDiscover movieDiscover = new MovieDiscover();
+        movieDiscover.execute(sortby, mContext.getString(R.string.tmdb_key));
+    }
 
     class MovieDiscover extends AsyncTask<String,Void, String>
     {

@@ -43,11 +43,18 @@ public class ImageAdapter extends BaseAdapter {
     void refreshImageUrls()
     {
         List<String> urls = new ArrayList<>();
+        if(imagePaths == null) return;
         for(String imgPath : imagePaths) {
-            Uri.Builder builder = Uri.parse(baseUrl).buildUpon();
-            builder.appendPath(size)
-                    .appendEncodedPath(imgPath);
-            urls.add(builder.build().toString());
+            if(imgPath != null && imgPath.length() >0) {
+                Uri.Builder builder = Uri.parse(baseUrl).buildUpon();
+                builder.appendPath(size)
+                        .appendEncodedPath(imgPath);
+                urls.add(builder.build().toString());
+            }
+            else
+            {
+                urls.add("");
+            }
         }
         String[] urlArr = new String[urls.size()];
         this.imageUrls = urls.toArray(urlArr);
@@ -91,6 +98,9 @@ public class ImageAdapter extends BaseAdapter {
             imageView = (ImageView) convertView;
         }
         if((imageUrls == null) || (position >= imageUrls.length)) {
+            imageView.setImageResource(mThumbIds[position]);
+        }
+        else if(imageUrls[position] == null || imageUrls[position].length() <= 0) {
             imageView.setImageResource(mThumbIds[position]);
         }
         else {

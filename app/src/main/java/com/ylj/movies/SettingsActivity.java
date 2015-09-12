@@ -24,6 +24,7 @@ import java.util.List;
 public class SettingsActivity extends PreferenceActivity {
 
     public static  String KEY_PREF_IMAGE_SIZE = "pref_sync_img_size";
+    public static String KEY_PREF_SORT_BY = "pref_key_sort_by";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

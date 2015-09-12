@@ -7,5 +7,12 @@
         android:entries="@array/pref_img_size_entries"
         android:entryValues="@array/pref_img_size_values"
         android:defaultValue="@string/pref_img_size_default"></ListPreference>
-
+    <ListPreference
+        android:key="pref_key_sort_by"
+        android:title="@string/pref_title_sort_by"
+        android:dialogTitle="@string/pref_title_sort_by"
+        android:entries="@array/pref_sort_by_entries"
+        android:entryValues="@array/pref_sort_by_values"
+        android:defaultValue="@string/pref_sort_by_default_value">
+    </ListPreference>
 </PreferenceScreen>

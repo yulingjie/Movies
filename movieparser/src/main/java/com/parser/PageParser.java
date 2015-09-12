@@ -22,7 +22,11 @@ public class PageParser implements IParser<Page>
         for(int i = 0; i != moviesObject.length();++i)
         {
             JSONObject movieObject = moviesObject.getJSONObject(i);
-            movies.add(movieParser.Parse(movieObject.toString()));
+            Movie movie =movieParser.Parse(movieObject.toString());
+            if(movie != null)
+            {
+                movies.add(movie);
+            }
         }
         Movie[] arrMovie = new Movie[movies.size()];
         page.setMovies(movies.toArray(arrMovie));
