@@ -18,47 +18,19 @@ import java.util.List;
  */
 public class ImageAdapter extends BaseAdapter {
 
-    final static String baseUrl = "http://image.tmdb.org/t/p/";
-    private String size="w342";
+
     private Context context;
     private String[] imageUrls;
-    private String[] imagePaths;
 
-    public void setImagePaths(String[] imagePaths) {
-        this.imagePaths =imagePaths;
-        refreshImageUrls();
+
+    public void setImageUrls(String[] imageUrls) {
+
+        this.imageUrls = imageUrls;
+
         notifyDataSetChanged();
     }
 
-    public void setSize(String size) {
-        this.size = size;
-        refreshImageUrls();
-        notifyDataSetChanged();
-    }
 
-    public String getSize() {
-        return size;
-    }
-
-    void refreshImageUrls()
-    {
-        List<String> urls = new ArrayList<>();
-        if(imagePaths == null) return;
-        for(String imgPath : imagePaths) {
-            if(imgPath != null && imgPath.length() >0) {
-                Uri.Builder builder = Uri.parse(baseUrl).buildUpon();
-                builder.appendPath(size)
-                        .appendEncodedPath(imgPath);
-                urls.add(builder.build().toString());
-            }
-            else
-            {
-                urls.add("");
-            }
-        }
-        String[] urlArr = new String[urls.size()];
-        this.imageUrls = urls.toArray(urlArr);
-    }
 
     public ImageAdapter(Context c)
     {

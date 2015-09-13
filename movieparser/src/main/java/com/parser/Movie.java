@@ -145,4 +145,6 @@ public class Movie {
     public int getVote_count() {
         return vote_count;
     }
+
+
 }

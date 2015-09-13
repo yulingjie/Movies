@@ -43,4 +43,5 @@
         <item>vote_count.desc</item>
     </string-array>
     <string name="pref_sort_by_default_value">popularity.desc</string>
+    <string name="title_activity_movie_detail">MovieDetailActivity</string>
 </resources>

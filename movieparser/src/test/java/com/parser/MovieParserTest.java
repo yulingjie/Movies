@@ -16,7 +16,7 @@ import static org.junit.Assert.assertEquals;
 public class MovieParserTest extends TestCase {
 
     @Test
-    public void testParse() throws Exception {
+    public void testParse()  throws Exception {
  String str = "{\"adult\":false, " +
                 "\"backdrop_path\":\"/dkMD5qlogeRMiEixC4YNPUvax2T.jpg\"," +
                 " \"genre_ids\":[28,12,878,53]," +

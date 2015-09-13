@@ -13,12 +13,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.GridView;
 
 import com.parser.Movie;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
@@ -33,7 +31,10 @@ public class MainFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
+
+
     private String mOldImageSize;
+
 
     MovieLoader movieLoader;
     ImageAdapter imageAdapter;
@@ -54,10 +55,8 @@ public class MainFragment extends Fragment {
         mDefaultPref = PreferenceManager.getDefaultSharedPreferences(this.getActivity());
 
         imageAdapter = new ImageAdapter(this.getActivity());
-        if(mDefaultPref.contains(SettingsActivity.KEY_PREF_IMAGE_SIZE))
-        {
-            imageAdapter.setSize(mDefaultPref.getString(SettingsActivity.KEY_PREF_IMAGE_SIZE, getString(R.string.pref_img_size_default)));
-        }
+        mOldImageSize = mDefaultPref.getString(SettingsActivity.KEY_PREF_IMAGE_SIZE, getString(R.string.pref_img_size_default));
+
         movieLoader = new MovieLoader(this.getActivity());
         movieLoader.setCallback(new OnMovieLoadComplete());
         if(mDefaultPref.contains(SettingsActivity.KEY_PREF_SORT_BY)) {
@@ -88,6 +87,19 @@ public class MainFragment extends Fragment {
         View view =inflater.inflate(R.layout.fragment_main, container, false);
         GridView gridView = (GridView) view.findViewById(R.id.gridview);
         gridView.setAdapter(imageAdapter);
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //Movie movie = mMovies[position];
+                Bundle b = new Bundle();
+                MovieParcelable movie = MovieStorage.getInstance().getMovie(position);
+                b.putParcelable(MovieDetailActivity.KEY_MOVIE, movie);
+                Intent intent = new Intent(MainFragment.this.getActivity(), MovieDetailActivity.class);
+                intent.putExtras(b);
+                startActivity(intent);
+            }
+        });
+
 
         return view;
     }
@@ -151,20 +163,9 @@ public class MainFragment extends Fragment {
         @Override
         public void MovieLoadComplete() {
             Movie[] movies = movieLoader.getMovies();
-            List<String> moviePath = new ArrayList<>();
-            for(Movie movie : movies)
-            {
-                if(!movie.getBackdrop_path().equals("null")) {
-                    moviePath.add(movie.getBackdrop_path());
-                }
-                else
-                {
-                    moviePath.add("");
-                }
-            }
-            String[] path = new String[moviePath.size()];
+            MovieStorage.getInstance().setMovies(movies);
 
-            imageAdapter.setImagePaths(moviePath.toArray(path));
+            imageAdapter.setImageUrls(MovieStorage.getInstance().getMovieImageUrls(mOldImageSize));
         }
     }
 
@@ -176,7 +177,7 @@ public class MainFragment extends Fragment {
             if(key.equals(SettingsActivity.KEY_PREF_IMAGE_SIZE))
             {
                 mOldImageSize = sharedPreferences.getString(key,mOldImageSize);
-                imageAdapter.setSize(mOldImageSize);
+                imageAdapter.setImageUrls(MovieStorage.getInstance().getMovieImageUrls(mOldImageSize));
             }
             else if(key.equals(SettingsActivity.KEY_PREF_SORT_BY))
             {
