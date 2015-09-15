@@ -3,6 +3,8 @@ package com.ylj.movies;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.parser.Trailer;
+
 /**
  * Created by ylj on 15-9-13.
  */
