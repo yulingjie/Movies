@@ -31,6 +31,7 @@ public class MovieStorage {
         for(Movie movie : movies)
         {
             MovieParcelable movieParcelable = new MovieParcelable();
+            movieParcelable.setId(movie.getId());
             movieParcelable.setTitle(movie.getTitle());
             movieParcelable.setImgUrl(movie.getBackdrop_path());
             movieParcelable.setPlotSnippets(movie.getOverview());

@@ -30,14 +30,9 @@ public class MainFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
-
-
-    private String mOldImageSize;
-
-
     MovieLoader movieLoader;
     ImageAdapter imageAdapter;
+    private String mOldImageSize;
     private OnFragmentInteractionListener mListener;
     private SharedPreferences mDefaultPref;
     private SharedPreferences.OnSharedPreferenceChangeListener mOnPrefChangeListener;
@@ -59,10 +54,9 @@ public class MainFragment extends Fragment {
 
         movieLoader = new MovieLoader(this.getActivity());
         movieLoader.setCallback(new OnMovieLoadComplete());
-        if(mDefaultPref.contains(SettingsActivity.KEY_PREF_SORT_BY)) {
-            movieLoader.Load(mDefaultPref.getString(SettingsActivity.KEY_PREF_SORT_BY,getString(R.string.pref_sort_by_default_value)));
-        }
-        else {
+        if (mDefaultPref.contains(SettingsActivity.KEY_PREF_SORT_BY)) {
+            movieLoader.Load(mDefaultPref.getString(SettingsActivity.KEY_PREF_SORT_BY, getString(R.string.pref_sort_by_default_value)));
+        } else {
             movieLoader.Load();
         }
     }
@@ -84,7 +78,7 @@ public class MainFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view =inflater.inflate(R.layout.fragment_main, container, false);
+        View view = inflater.inflate(R.layout.fragment_main, container, false);
         GridView gridView = (GridView) view.findViewById(R.id.gridview);
         gridView.setAdapter(imageAdapter);
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -142,7 +136,6 @@ public class MainFragment extends Fragment {
     }
 
 
-
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -158,8 +151,7 @@ public class MainFragment extends Fragment {
         public void onFragmentInteraction(Uri uri);
     }
 
-    class OnMovieLoadComplete implements IMovieLoad
-    {
+    class OnMovieLoadComplete implements MovieLoader.IMovieLoad {
         @Override
         public void MovieLoadComplete() {
             Movie[] movies = movieLoader.getMovies();
@@ -169,18 +161,14 @@ public class MainFragment extends Fragment {
         }
     }
 
-    class OnSharedPreferenceChange implements SharedPreferences.OnSharedPreferenceChangeListener
-    {
+    class OnSharedPreferenceChange implements SharedPreferences.OnSharedPreferenceChangeListener {
 
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-            if(key.equals(SettingsActivity.KEY_PREF_IMAGE_SIZE))
-            {
-                mOldImageSize = sharedPreferences.getString(key,mOldImageSize);
+            if (key.equals(SettingsActivity.KEY_PREF_IMAGE_SIZE)) {
+                mOldImageSize = sharedPreferences.getString(key, mOldImageSize);
                 imageAdapter.setImageUrls(MovieStorage.getInstance().getMovieImageUrls(mOldImageSize));
-            }
-            else if(key.equals(SettingsActivity.KEY_PREF_SORT_BY))
-            {
+            } else if (key.equals(SettingsActivity.KEY_PREF_SORT_BY)) {
                 String sort_by = sharedPreferences.getString(key, getString(R.string.pref_sort_by_default_value));
                 movieLoader.Load(sort_by);
             }

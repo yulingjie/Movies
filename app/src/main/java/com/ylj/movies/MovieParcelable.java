@@ -10,7 +10,7 @@ import com.parser.Trailer;
  */
 public class MovieParcelable implements Parcelable {
 
-
+    int id;
     String title;
     String imgUrl;
     float voteRate;
@@ -18,6 +18,13 @@ public class MovieParcelable implements Parcelable {
     String releaseDate;
     String plotSnippets;
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getTitle() {
         return title;
@@ -73,6 +80,7 @@ public class MovieParcelable implements Parcelable {
     }
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
         dest.writeString(title);
         dest.writeString(imgUrl);
         dest.writeFloat(voteRate);
@@ -82,6 +90,7 @@ public class MovieParcelable implements Parcelable {
     }
     private MovieParcelable(Parcel in)
     {
+        id = in.readInt();
         title = in.readString();
         imgUrl = in.readString();
         voteRate = in.readFloat();

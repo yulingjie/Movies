@@ -8,6 +8,12 @@ import com.parser.IParser;
 import com.parser.Movie;
 import com.parser.Page;
 import com.parser.PageParser;
+import com.parser.Trailer;
+import com.parser.TrailerParser;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -16,20 +22,23 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by ylj on 8/6/15.
  */
 
-interface IMovieLoad
-{
-    void MovieLoadComplete();
-}
+
 
 public class MovieLoader {
     Movie[] movies;
     Context mContext;
     IMovieLoad callback;
+
 
     public Movie[] getMovies() {
         return movies;
@@ -38,6 +47,7 @@ public class MovieLoader {
     public MovieLoader(Context context)
     {
         mContext = context;
+
     }
 
     public void setCallback(IMovieLoad callback) {
@@ -108,4 +118,9 @@ public class MovieLoader {
 
         }
     }
+    interface IMovieLoad
+    {
+        void MovieLoadComplete();
+    }
+
 }

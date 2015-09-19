@@ -3,11 +3,16 @@ package com.ylj.movies;
 import android.hardware.Camera;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.parser.Trailer;
 import com.squareup.picasso.Picasso;
 
 
@@ -15,6 +20,9 @@ public class MovieDetailActivity extends ActionBarActivity {
 
     public static String KEY_MOVIE = "com.ylj.movies.MovieDetailActivity.movie";
 
+    TrailerLoader loader;
+    Trailer[] trailers;
+    TrailerAdapter trailerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,13 +36,22 @@ public class MovieDetailActivity extends ActionBarActivity {
         TextView textView = (TextView)findViewById(R.id.movie_title);
         textView.setText(movie.getTitle());
         TextView voteCount = (TextView)findViewById(R.id.movie_vote_count);
-        voteCount.setText(String.format("(%1$d votes)",movie.getVoteCount()));
+        voteCount.setText(String.format("(%1$d votes)", movie.getVoteCount()));
         TextView vote = (TextView)findViewById(R.id.movie_vote);
         vote.setText(String.valueOf(movie.getVoteRate()));
         TextView releaseDate = (TextView)findViewById(R.id.movie_release_data);
         releaseDate.setText(movie.getReleaseDate());
         TextView plot = (TextView)findViewById(R.id.movie_plot);
         plot.setText(movie.getPlotSnippets());
+
+        ListView listView = (ListView)findViewById(R.id.trailer_container);
+        trailerAdapter = new TrailerAdapter(this);
+        trailerAdapter.setOnTrailerClickListener(new OnTrailerClick());
+        listView.setAdapter(trailerAdapter);
+
+        loader = new TrailerLoader(this);
+        loader.setOnTralierLoadComplete(new OnTrailerLoadComplete());
+        loader.Load(movie.getId());
     }
 
     @Override
@@ -57,5 +74,22 @@ public class MovieDetailActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+    class OnTrailerLoadComplete implements TrailerLoader.ITrailerLoad
+    {
+
+        @Override
+        public void TrailerLoadComplete() {
+            trailers = loader.getTrailers();
+            trailerAdapter.setTrailers(trailers);
+        }
+    }
+
+    class OnTrailerClick implements TrailerAdapter.OnTrailerClickListener{
+
+        @Override
+        public void OnTrailerClick(int pos) {
+            Toast.makeText(MovieDetailActivity.this, String.valueOf(pos) ,Toast.LENGTH_SHORT).show();
+        }
     }
 }
