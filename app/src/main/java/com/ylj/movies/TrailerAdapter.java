@@ -31,7 +31,7 @@ public class TrailerAdapter extends BaseAdapter {
         notifyDataSetInvalidated();
     }
     public void setOnTrailerClickListener(OnTrailerClickListener listener) {
-        this.mListener = mListener;
+        this.mListener = listener;
     }
 
     @Override

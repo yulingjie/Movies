@@ -1,6 +1,9 @@
 package com.ylj.movies;
 
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
 import android.hardware.Camera;
+import android.net.Uri;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -89,7 +92,24 @@ public class MovieDetailActivity extends ActionBarActivity {
 
         @Override
         public void OnTrailerClick(int pos) {
-            Toast.makeText(MovieDetailActivity.this, String.valueOf(pos) ,Toast.LENGTH_SHORT).show();
+            Trailer trailer = trailers[pos];
+            watchYoutubeVideo(trailer.getId());
+        }
+    }
+
+    /**
+     * watch youtube video function
+     * copy from [ref](http://stackoverflow.com/questions/574195/android-youtube-app-play-video-intent)
+     */
+    void watchYoutubeVideo(String id)
+    {
+        try{
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + id));
+            startActivity(intent);
+        }catch (ActivityNotFoundException ex){
+            Intent intent=new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("http://www.youtube.com/watch?v="+id));
+            startActivity(intent);
         }
     }
 }
