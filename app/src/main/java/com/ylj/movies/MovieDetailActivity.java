@@ -2,18 +2,16 @@ package com.ylj.movies;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
-import android.hardware.Camera;
 import android.net.Uri;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
+
 
 import com.parser.Trailer;
 import com.squareup.picasso.Picasso;
@@ -25,8 +23,8 @@ public class MovieDetailActivity extends ActionBarActivity {
 
     TrailerLoader loader;
     Trailer[] trailers;
-    TrailerAdapter trailerAdapter;
-
+    TrailerAdapter mTrailerAdapter;
+    RecyclerView mRecyclerView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,10 +45,15 @@ public class MovieDetailActivity extends ActionBarActivity {
         TextView plot = (TextView)findViewById(R.id.movie_plot);
         plot.setText(movie.getPlotSnippets());
 
-        ListView listView = (ListView)findViewById(R.id.trailer_container);
-        trailerAdapter = new TrailerAdapter(this);
-        trailerAdapter.setOnTrailerClickListener(new OnTrailerClick());
-        listView.setAdapter(trailerAdapter);
+
+        mRecyclerView = (RecyclerView)findViewById(R.id.recycler_view_trailers);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+
+        mRecyclerView.setLayoutManager(layoutManager);
+        mTrailerAdapter = new TrailerAdapter();
+        mTrailerAdapter.setOnTrailerClickListener(new OnTrailerClick());
+        mRecyclerView.setAdapter(mTrailerAdapter);
 
         loader = new TrailerLoader(this);
         loader.setOnTralierLoadComplete(new OnTrailerLoadComplete());
@@ -84,7 +87,7 @@ public class MovieDetailActivity extends ActionBarActivity {
         @Override
         public void TrailerLoadComplete() {
             trailers = loader.getTrailers();
-            trailerAdapter.setTrailers(trailers);
+            mTrailerAdapter.setTrailers(trailers);
         }
     }
 
