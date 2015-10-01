@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 
+import com.parser.Review;
 import com.parser.Trailer;
 import com.squareup.picasso.Picasso;
 
@@ -21,10 +22,15 @@ public class MovieDetailActivity extends ActionBarActivity {
 
     public static String KEY_MOVIE = "com.ylj.movies.MovieDetailActivity.movie";
 
-    TrailerLoader loader;
-    Trailer[] trailers;
+    Trailer[] mTrailers;
+    TrailerLoader trailerLoader;
     TrailerAdapter mTrailerAdapter;
-    RecyclerView mRecyclerView;
+    RecyclerView mTrailerView;
+    Review[] mReviews;
+    RecyclerView mReviewView;
+    ReviewAdapter mReviewAdapter;
+    ReviewLoader mReviewLoader;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,18 +52,31 @@ public class MovieDetailActivity extends ActionBarActivity {
         plot.setText(movie.getPlotSnippets());
 
 
-        mRecyclerView = (RecyclerView)findViewById(R.id.recycler_view_trailers);
+        mTrailerView = (RecyclerView)findViewById(R.id.recycler_view_trailers);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
 
-        mRecyclerView.setLayoutManager(layoutManager);
+        mTrailerView.setLayoutManager(layoutManager);
         mTrailerAdapter = new TrailerAdapter();
         mTrailerAdapter.setOnTrailerClickListener(new OnTrailerClick());
-        mRecyclerView.setAdapter(mTrailerAdapter);
+        mTrailerView.setAdapter(mTrailerAdapter);
 
-        loader = new TrailerLoader(this);
-        loader.setOnTralierLoadComplete(new OnTrailerLoadComplete());
-        loader.Load(movie.getId());
+        trailerLoader = new TrailerLoader(this);
+        trailerLoader.setOnTralierLoadComplete(new OnTrailerLoadComplete());
+        trailerLoader.Load(movie.getId());
+
+        mReviewView = (RecyclerView)findViewById(R.id.recycler_view_reviews);
+        FullyLinearLayoutManager reviewManager = new FullyLinearLayoutManager(this);
+        reviewManager.setOrientation(FullyLinearLayoutManager.VERTICAL);
+
+        mReviewView.setLayoutManager(reviewManager);
+        mReviewAdapter = new ReviewAdapter();
+        mReviewView.setAdapter(mReviewAdapter);
+
+        mReviewLoader = new ReviewLoader(this);
+        mReviewLoader.setReviewLoadListener(new OnReviewLoadComplete());
+        mReviewLoader.Load(movie.getId(),1);
+
     }
 
     @Override
@@ -81,13 +100,23 @@ public class MovieDetailActivity extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
+    class OnReviewLoadComplete implements ReviewLoader.IReviewLoad
+    {
+
+        @Override
+        public void ReviewLoadComplete() {
+            mReviews = mReviewLoader.getReviews();
+
+            mReviewAdapter.setReviews(mReviews);
+        }
+    }
     class OnTrailerLoadComplete implements TrailerLoader.ITrailerLoad
     {
 
         @Override
         public void TrailerLoadComplete() {
-            trailers = loader.getTrailers();
-            mTrailerAdapter.setTrailers(trailers);
+            mTrailers = trailerLoader.getTrailers();
+            mTrailerAdapter.setTrailers(mTrailers);
         }
     }
 
@@ -95,7 +124,7 @@ public class MovieDetailActivity extends ActionBarActivity {
 
         @Override
         public void OnTrailerClick(int pos) {
-            Trailer trailer = trailers[pos];
+            Trailer trailer = mTrailers[pos];
             watchYoutubeVideo(trailer.getId());
         }
     }
